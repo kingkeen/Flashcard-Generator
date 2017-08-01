@@ -100,28 +100,24 @@ inquirer.prompt([
         askQuestion();
 	});
 
+var currReview = 0;
+
 // starts the prompts for reviewing the flash cards. 
 function review () {
 	console.log("================================");
 	console.log("Time to review your flash cards!");
 	
 	var reviewCount = cardArray.length; 
-	var currReview = 0;
 
 	// see if the array has been cycled thru before asking if to review again
 	if (currReview < reviewCount) { 
-		
-		// Loop thru the array of cards created. 
-		for (var j=0; j < cardArray.length; j++){
-			
-			var correctAnswer = cardArray[j].back;
+					
+			var correctAnswer = cardArray[currReview].back;
 			// console.log(correctAnswer);
-			currReview++;
-			
 			inquirer.prompt([
 			{
 				name: "question",
-				message: cardArray[j].front
+				message: cardArray[currReview].front
 			}]).then(function(res) {
 				var response = res.question;
 				if (response === correctAnswer){
@@ -129,24 +125,28 @@ function review () {
 				} else {
 					console.log("Incorrect!");
 				};
+			currReview++;
+			review();
 			});
-		};
+		
 	} else {
-	again();
+		again();
 	};
 };
 
-function again () {
+function again() {
 	inquirer.prompt([
 	    {
 		    type: "list",
 		    name: "type",
 		    message: "Would you like to review again?",
 		    choices: ["Yes", "No"]
-	    }]).then(function(review) {
+	    }]).then(function(reviews) {
     	// saves the user's requested flash card type to variable. 
     		reviews = review.type;
     		if (reviews === "Yes") {
+    			currReview = 0;
+    			// console.log(review);
     			review();
     		} else {
     			return;
