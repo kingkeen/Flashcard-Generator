@@ -1,11 +1,7 @@
-exports.ClozeCard = function(fullAnswer, cloze, clozeQuestion) {
+exports.ClozeCard = function(fullAnswer, back, front) {
   this.fullAnswer = fullAnswer;
-  this.cloze = cloze;
-  this.clozeQuestion = clozeQuestion;
-
-
-
-  // this.displayText = this.fullAnswer.replace(this.removedPortion, "...");
+  this.back = back;
+  this.front = front;
 };
 
 

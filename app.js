@@ -58,30 +58,30 @@ function askQuestion () {
 };
 
 // function calls to basic card.js to create a basic flash card from that constructor. 
-function createBasic (basicFront, basicBack){
-	if ((basicFront.trim() === "") || (basicBack.trim() === "")) {
+function createBasic (front, back){
+	if ((front.trim() === "") || (back.trim() === "")) {
 		console.log("Try again.");
 		askQuestion();
 	} else {
-		cardArray.push(new basicData.BasicCard(basicFront, basicBack));
+		cardArray.push(new basicData.BasicCard(front, back));
     	count++;
-    	console.log(cardArray)
+    	// console.log(cardArray)
 	    askQuestion();
 	}
 };
 
 // function calls to close card.js to create the cloze card from that constructor. 
-function createCloze (fullAnswer, cloze, clozeQuestion) {
-	if ((fullAnswer.trim() === "") || (cloze.trim() === "")) {
+function createCloze (fullAnswer, back, front) {
+	if ((fullAnswer.trim() === "") || (back.trim() === "")) {
 		console.log("Try again.");
     	askQuestion();
-  	} else if (fullAnswer.trim().includes(cloze.trim())) {
+  	} else if (fullAnswer.trim().includes(back.trim())) {
 
-  		// method to remove the "cloze" phrase from the flashcard question.
-    	clozeQuestion = fullAnswer.replace(cloze, "......");
+  		// method to remove the "cloze"/back phrase from the flashcard question.
+    	front = fullAnswer.replace(back, "......");
 
-		cardArray.push(new clozeData.ClozeCard(fullAnswer, cloze, clozeQuestion));
-		console.log(cardArray);
+		cardArray.push(new clozeData.ClozeCard(fullAnswer, back, front));
+		// console.log(cardArray);
     	count++;
     	askQuestion();
     } else {
@@ -100,34 +100,52 @@ inquirer.prompt([
         askQuestion();
 	});
 
+// starts the prompts for reviewing the flash cards. 
 function review () {
-	console.log("/nTime to review your flash cards!");
-	for (var j=0; j < cardArray.length; j++){
+	console.log("================================");
+	console.log("Time to review your flash cards!");
+	
+	var reviewCount = cardArray.length; 
+	var currReview = 0;
 
-		
+	if (currReview < reviewCount) { 
+		// Loop thru the array of cards created. 
+		for (var j=0; j < cardArray.length; j++){
+			var correctAnswer = cardArray[j].back;
+			// console.log(correctAnswer);
+			currReview++;
+			inquirer.prompt([
+			{
+				name: "question",
+				message: cardArray[j].front
+			}]).then(function(res) {
+				var response = res.question;
+				if (response === correctAnswer){
+					console.log("Correct!");
+				} else {
+					console.log("Incorrect!");
+				};
+			});
+		};
+	} else {
+	again();
+	};
+};
 
-		
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function again () {
+	inquirer.prompt([
+	    {
+		    type: "list",
+		    name: "type",
+		    message: "Would you like to review again?",
+		    choices: ["Yes", "No"]
+	    }]).then(function(review) {
+    	// saves the user's requested flash card type to variable. 
+    		reviews = review.type;
+    		if (reviews === "Yes") {
+    			review();
+    		} else {
+    			return;
+    		};
+	});
+};
