@@ -108,12 +108,16 @@ function review () {
 	var reviewCount = cardArray.length; 
 	var currReview = 0;
 
+	// see if the array has been cycled thru before asking if to review again
 	if (currReview < reviewCount) { 
+		
 		// Loop thru the array of cards created. 
 		for (var j=0; j < cardArray.length; j++){
+			
 			var correctAnswer = cardArray[j].back;
 			// console.log(correctAnswer);
 			currReview++;
+			
 			inquirer.prompt([
 			{
 				name: "question",
